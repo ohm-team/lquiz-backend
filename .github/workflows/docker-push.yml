@@ -43,22 +43,22 @@ jobs:
           docker pull $IMAGE_NAME
           docker stop $APP_NAME || echo ‘failed to stop running container’
           docker rm $APP_NAME || echo ‘failed to remove stopped container’
-          docker run
-            -d
-            --expose 4500
-            --restart=always
-            --name $APP_NAME
-            -e VIRTUAL_HOST=$VIRTUAL_HOST
-            -e PUBLIC_URL=$PUBLIC_URL
-            -e HTTPS_METHOD=noredirect
-            -e SANIC_DB_HOST=$MONGO_HOST
-            -e DEBUG=true
-            -e HOST=0.0.0.0
-            -e PORT=4500
-            -e SANIC_DB_DATABASE=$MONGO_DATABASE
-            -e LETSENCRYPT_HOST=$VIRTUAL_HOST
-            -e LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL
-            --link mongo
-            $IMAGE_NAME
+          docker run \
+            -d \
+            --expose 4500 \
+            --restart=always \
+            --name $APP_NAME \
+            -e VIRTUAL_HOST=$VIRTUAL_HOST \
+            -e PUBLIC_URL=$PUBLIC_URL \
+            -e HTTPS_METHOD=noredirect \
+            -e SANIC_DB_HOST=$MONGO_HOST \
+            -e DEBUG=true \
+            -e HOST=0.0.0.0 \
+            -e PORT=4500 \
+            -e SANIC_DB_DATABASE=$MONGO_DATABASE \
+            -e LETSENCRYPT_HOST=$VIRTUAL_HOST \
+            -e LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL \
+            --link mongo \
+            $IMAGE_NAME \
             'bash -c "gunicorn lquiz-backend.app:app --bind 0.0.0.0:4500 --worker-class sanic.worker.GunicornWorker"'
       
