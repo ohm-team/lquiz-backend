@@ -1,9 +1,10 @@
 FROM python:3.7
 ENV PYTHONUNBUFFERED 1
 WORKDIR /app
-COPY app /app/
-RUN pip install -r requirements.txt
+COPY lquiz-backend /app/lquiz-backend
+COPY conf /app/lquiz-backend/conf
+RUN pip install -r /app/lquiz-backend/requirements.txt
 
 ENV PYTHONPATH = $PYTHONPATH:/app/
 
-CMD ["python", "/app/app.py"]
+CMD ["python", "/app/lquiz-backend/app.py"]

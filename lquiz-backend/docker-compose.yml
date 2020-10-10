@@ -1,7 +1,6 @@
 version: '3'
 
 services:
-
   lquiz-backend:
     env_file:
       - ./lquiz-backend/conf/dev.env
@@ -9,7 +8,7 @@ services:
     volumes:
       - ./lquiz-backend:/app
 
-    command: bash -c "gunicorn app:app --bind 0.0.0.0:4500 --worker-class sanic.worker.GunicornWorker"
+    command: bash -c "gunicorn lquiz-backend.app:app --bind 0.0.0.0:4500 --worker-class sanic.worker.GunicornWorker"
     ports:
       - 4500:4500
 
