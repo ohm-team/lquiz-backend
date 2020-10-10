@@ -22,3 +22,44 @@ jobs:
         BUILD_CONTEXT: 'lquiz-backend/lquiz-backend/'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Run docker
+      uses: ironhalik/docker-over-ssh-action@v1
+      env:
+        APP_NAME: lquiz-backend
+        IMAGE_NAME: ${{ steps.docker.outputs.IMAGE_SHA_NAME }}
+        MONGO_HOST: mongo
+        MONGO_DATABASE: lquiz-backend
+        VIRTUAL_HOST: lquiz-backend.goooseman.ru
+        PUBLIC_URL: https://lquiz-backend.goooseman.ru
+        LETSENCRYPT_EMAIL: services@bez-hurmy.ru
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+      with:
+        user: ${{ secrets.SSH_USER }}
+        host: ${{ secrets.SSH_HOST }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          docker info
+          docker login -u $GITHUB_USERNAME -p $GITHUB_TOKEN docker.pkg.github.com
+          docker pull $IMAGE_NAME
+          docker stop $APP_NAME
+          docker rm $APP_NAME
+          docker run
+            -d
+            --expose 4500
+            --restart=always
+            --name $APP_NAME
+            -e VIRTUAL_HOST=$VIRTUAL_HOST
+            -e PUBLIC_URL=$PUBLIC_URL
+            -e HTTPS_METHOD=noredirect
+            -e SANIC_DB_HOST=$MONGO_HOST
+            -e DEBUG=true
+            -e HOST=0.0.0.0
+            -e PORT=4500
+            -e SANIC_DB_DATABASE=$MONGO_DATABASE
+            -e LETSENCRYPT_HOST=$VIRTUAL_HOST
+            -e LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL
+            --link mongo
+            $IMAGE_NAME
+            'bash -c "gunicorn lquiz-backend.app:app --bind 0.0.0.0:4500 --worker-class sanic.worker.GunicornWorker"'
+      
