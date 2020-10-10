@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    volumes:
+      - ./lquiz-backend:/app
+
+    command: bash -c "gunicorn lquiz-backend.app:app --bind 0.0.0.0:8000 --worker-class sanic.worker.GunicornWorker"
+    ports:
+      - 8000:8000
+
+ mongo:
+     image: mongo:3.0
+     hostname: mongo
+     ports:
+         - "27017:27017"
+     volumes:
+         - ./data/mongo_home:/others/data/mongodb
+     restart: always
+     mem_limit: 1024m
