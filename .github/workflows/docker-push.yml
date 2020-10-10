@@ -1,0 +1,24 @@
+# https://github.com/marketplace/actions/publish-docker-images-to-gpr
+
+name: Publish Docker image to GitHub Package Registry
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest 
+    steps:
+
+    - name: Copy Repo Files
+      uses: actions/checkout@master
+
+     #This Action Emits 2 Variables, IMAGE_SHA_NAME and IMAGE_URL 
+     #which you can reference in subsequent steps
+    - name: Publish Docker Image to GPR
+      uses: machine-learning-apps/gpr-docker-publish@master
+      id: docker
+      with:
+        IMAGE_NAME: 'lquiz-backend'
+        TAG: 'staging'
+        DOCKERFILE_PATH: 'lquiz-backend/lquiz-backend/Dockerfile'
+        BUILD_CONTEXT: 'lquiz-backend/lquiz-backend/'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
