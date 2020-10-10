@@ -2,20 +2,26 @@ version: '3'
 
 services:
   web:
+    env_file:
+      - ./lquiz-backend/conf/dev.env
     build: .
     volumes:
       - ./lquiz-backend:/app
 
-    command: bash -c "gunicorn lquiz-backend.app:app --bind 0.0.0.0:8000 --worker-class sanic.worker.GunicornWorker"
+    command: bash -c "gunicorn app:app --bind 0.0.0.0:4500 --worker-class sanic.worker.GunicornWorker"
     ports:
-      - 8000:8000
+      - 4500:4500
 
- mongo:
-     image: mongo:3.0
-     hostname: mongo
-     ports:
-         - "27017:27017"
-     volumes:
-         - ./data/mongo_home:/others/data/mongodb
-     restart: always
-     mem_limit: 1024m
+  mongo:
+    image: mongo:3.0
+    hostname: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/mongo_home:/others/data/mongodb
+    restart: always
+    mem_limit: 512m
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 12345
+      MONGO_INITDB_DATABASE: quiz

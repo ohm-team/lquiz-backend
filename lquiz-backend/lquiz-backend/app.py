@@ -4,18 +4,21 @@ from sanic import Sanic
 from sanic.response import json
 from sentry_sdk.integrations.sanic import SanicIntegration
 
-from .config import SENTRY_DSN
 
-
-sentry_sdk.init(
-    dsn=SENTRY_DSN,
-    integrations=[SanicIntegration()]
-)
+# sentry_sdk.init(
+#     dsn=os.getenv("SENTRY_SDN"),
+#     integrations=[SanicIntegration()]
+# )
 
 app = Sanic()
 
 
-@app.route("/number_question")
+@app.route("/generate_questions")
+async def welcome_view(request):
+    return json({"message": "Welcome to lquiz-backend API"})
+
+
+@app.route("/")
 async def welcome_view(request):
     return json({"message": "Welcome to lquiz-backend API"})
 
