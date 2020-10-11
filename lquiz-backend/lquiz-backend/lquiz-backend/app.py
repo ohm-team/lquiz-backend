@@ -53,7 +53,7 @@ async def generate_questions(request):
         raise InvalidUsage(f"Invalid locale: {locale}")
     try:
         logger.info(f"Preparing set of {size} question in {locale} language")
-        return jsonify({"questions": collect_questions(locale, size)})
+        return jsonify({"questions": collect_questions(locale, size)}, ensure_ascii=False)
     except Exception as e:
         return ServerError("Couldn't prepare a set of questions")
 
