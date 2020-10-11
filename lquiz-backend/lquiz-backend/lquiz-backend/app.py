@@ -23,7 +23,7 @@ CORS(app)
 def load_questions():
     questions_by_locale_map = {}
     for questions_file in os.listdir("data"):
-        with open(os.path.join("data", questions_file), encoding='iso-8859-1') as f:
+        with open(os.path.join("data", questions_file), encoding='utf-8') as f:
             locale = os.path.splitext(questions_file)[0].split("-")[1]
             questions_by_locale_map[locale] = json.load(f)["questions"]
             print(f"found {len(questions_by_locale_map[locale])} questions for locale {locale}")
